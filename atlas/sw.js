@@ -1,5 +1,5 @@
 /* Offline-first service worker: art, voice recordings and the quiz are all local. */
-const CACHE_NAME = 'night-atlas-offline-v1';
+const CACHE_NAME = 'night-atlas-offline-v2';
 const ASSETS = [
   './',
   './index.html',
