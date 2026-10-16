@@ -1,0 +1,16 @@
+{
+  "name": "Ночной атлас ёкаев",
+  "short_name": "Атлас ёкаев",
+  "description": "12 японских ёкаев, иллюстрированные легенды и мини-игра — даже без интернета.",
+  "lang": "ru",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#172534",
+  "theme_color": "#172534",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}

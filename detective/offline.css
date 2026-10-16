@@ -1,0 +1,4 @@
+.offline-ready-status {position:fixed;left:16px;bottom:max(14px,env(safe-area-inset-bottom));z-index:45;max-width:min(355px,calc(100vw - 32px));border:1px solid #d6b37c;background:#0c262cf5;color:#f4ede2;box-shadow:0 5px 25px #03131462;padding:10px 13px;font:600 12px/1.4 Arial,sans-serif;letter-spacing:.015em;backdrop-filter:blur(12px);pointer-events:none}
+.offline-ready-status[data-state="ready"]{border-color:#8db6a1}
+.offline-ready-status[data-state="error"]{border-color:#cf8d77}
+@media(max-width:600px){.offline-ready-status{left:10px;bottom:max(10px,env(safe-area-inset-bottom));font-size:11px;padding:8px 11px}}
