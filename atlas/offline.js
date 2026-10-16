@@ -1,5 +1,5 @@
 (() => {
-  const cacheName = 'night-atlas-offline-v1';
+  const cacheName = 'night-atlas-offline-v2';
   const badge = document.createElement('div');
   badge.className = 'offline-ready-status';
   badge.setAttribute('role', 'status');
