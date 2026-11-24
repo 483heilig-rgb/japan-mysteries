@@ -20,16 +20,17 @@ function openModal(content){
 }
 function showSources(ids){openModal(`<div class="modal-pad"><p class="eyebrow coral">Проверить факты</p><h2 id="modalTitle">Откуда мы это знаем</h2>${sourceList(ids)}</div>`)}
 function markJourney(i){visited.add(i);persist('hearn-journey',[...visited]);}
+function biographyMore(item,label){return item.more?.length?`<details class="bio-more"><summary>${esc(label)}</summary><div>${item.more.map(p=>`<p>${esc(p)}</p>`).join('')}</div></details>`:''}
 function renderJourney(i=selectedJourney){
  selectedJourney=i;const j=HEARN.journey[i];markJourney(i);
  document.querySelectorAll('[data-journey]').forEach(b=>{b.setAttribute('aria-pressed',String(Number(b.dataset.journey)===i));b.querySelector('.visited-mark').hidden=!visited.has(Number(b.dataset.journey))});
- $('journeyPanel').innerHTML=`<div class="journey-symbol" aria-hidden="true">${j.symbol}</div><div><p class="panel-kicker">${esc(j.year)} · ${esc(j.jp)}</p><h3>${esc(j.title)}</h3><p>${esc(j.text)}</p>${sourceButton(j.sources,'Основано на источниках')}</div>`;
+ $('journeyPanel').innerHTML=`<div class="journey-symbol" aria-hidden="true">${j.symbol}</div><div><p class="panel-kicker">${esc(j.year)} · ${esc(j.jp)}</p><h3>${esc(j.title)}</h3><p>${esc(j.text)}</p>${biographyMore(j,'Подробнее об этом этапе')}${sourceButton(j.sources,'Основано на источниках')}</div>`;
 }
 function renderJapan(i=selectedJapan){
  selectedJapan=i;const j=HEARN.japan[i];
  document.querySelectorAll('[data-japan]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.japan)===i)));
  const label=i===0?'Дом Хирна в Мацуэ · фото 2019 года':i===2?'Хирн в 1889 году · фото, не снимок периода Кобэ':'Атмосферная иллюстрация · не изображение этого города';
- $('japanPanel').innerHTML=`<figure class="${i===2?'portrait':''}"><img src="${esc(j.image)}" alt="${esc(label)}" loading="lazy"><figcaption>${esc(label)}</figcaption></figure><div class="japan-copy"><p class="panel-kicker">${esc(j.years)} · ${esc(j.jp)}</p><h3>${esc(j.title)}</h3><p>${esc(j.text)}</p><p class="japan-detail">${esc(j.detail)}</p>${sourceButton(j.sources)}</div>`;
+ $('japanPanel').innerHTML=`<figure class="${i===2?'portrait':''}"><img src="${esc(j.image)}" alt="${esc(label)}" loading="lazy"><figcaption>${esc(label)}</figcaption></figure><div class="japan-copy"><p class="panel-kicker">${esc(j.years)} · ${esc(j.jp)}</p><h3>${esc(j.title)}</h3><p>${esc(j.text)}</p><p class="japan-detail">${esc(j.detail)}</p>${biographyMore(j,'Жизнь и работа в этом городе')}${sourceButton(j.sources)}</div>`;
 }
 const methods={
  oral:'<p><strong>Живые голоса.</strong> Сэцу рассказывала Хирну истории, но не была единственным источником. В предисловии к «Кайдану» он, например, связывает «Юки-онна» с рассказом крестьянина из Тёфу.</p>',

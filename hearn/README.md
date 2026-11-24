@@ -22,3 +22,7 @@ Buildless HTML/CSS/JavaScript. No external JavaScript, analytics, accounts, or p
 New generated assets: `assets/matsue-dusk.webp`, `assets/hoichi.webp`. Built-in ImageGen was used. Prompts are recorded in `image-prompts.md`.
 
 Historical photos: Hearn (Frederick Gutekunst, 1889), Koizumi Setsu (unknown photographer, circa 1888), and the former residence in Matsue (irisgazer, 2019). Their Wikimedia Commons file pages are linked in the image credits. Files are locally bundled.
+
+## Biography expansion
+
+Life-stage and Japanese-city cards include optional expanded paragraphs. Research context and citations include Anastasia N. Salnikova’s journalism (2022) and Russia (2021) articles. The antique-motifs (2022) note uses the published abstract only. New copy is a short adapted summary, not a quotation. Existing audio remains a brief overview. Cache namespace advanced to v4.

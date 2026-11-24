@@ -1,5 +1,5 @@
 'use strict';
-const VERSION='hearn-album-v3';
+const VERSION='hearn-album-v4';
 const BASE=new URL('./',self.location.href);
 const CORE=['./','index.html','style.css','app.js','data.js','icon.svg','manifest.webmanifest','assets/matsue-dusk.webp','assets/portrait.jpg','assets/setsu.webp','assets/house.webp','assets/hoichi.webp'];
 const EXTRA=['assets/audio/intro.mp3','assets/audio/japan.mp3','assets/audio/setsu.mp3','assets/audio/story-hoichi.mp3','assets/audio/story-snow.mp3','assets/audio/story-mujina.mp3','../atlas/assets/yokai-04.jpg','../atlas/assets/yokai-10.jpg','../atlas/assets/audio/rain-window.mp3'];
