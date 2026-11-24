@@ -1,7 +1,7 @@
 'use strict';
-const VERSION='hearn-album-v4';
+const VERSION='hearn-album-v5';
 const BASE=new URL('./',self.location.href);
-const CORE=['./','index.html','style.css','app.js','data.js','icon.svg','manifest.webmanifest','assets/matsue-dusk.webp','assets/portrait.jpg','assets/setsu.webp','assets/house.webp','assets/hoichi.webp'];
+const CORE=['./','index.html','style.css?v=4','app.js?v=4','data.js?v=4','icon.svg','manifest.webmanifest','assets/matsue-dusk.webp','assets/portrait.jpg','assets/setsu.webp','assets/house.webp','assets/hoichi.webp'];
 const EXTRA=['assets/audio/intro.mp3','assets/audio/japan.mp3','assets/audio/setsu.mp3','assets/audio/story-hoichi.mp3','assets/audio/story-snow.mp3','assets/audio/story-mujina.mp3','../atlas/assets/yokai-04.jpg','../atlas/assets/yokai-10.jpg','../atlas/assets/audio/rain-window.mp3'];
 const urls=paths=>paths.map(p=>new URL(p,BASE).href);
 self.addEventListener('install',e=>{e.waitUntil(caches.open(VERSION).then(c=>c.addAll(urls(CORE))).then(()=>self.skipWaiting()))});
