@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#17271f">
+<title>Minoh + Katsuo-ji · 28 ноября 2026</title>
+<meta name="description" content="Интерактивный маршрут: Minoh Falls, Ryūan-ji и Katsuo-ji с подсветкой. Карта, пошаговый транспорт, внутренний маршрут и госюины.">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{--bg:#f3eee4;--paper:#fffaf0;--ink:#252820;--muted:#6e7167;--green:#365941;--red:#a74832;--gold:#c7943f;--blue:#476b83;--line:#d9cdbb;--dark:#17271f;--shadow:0 18px 50px #2c2b2118}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;line-height:1.55}button,a{font:inherit}a{color:inherit}
+.hero{padding:34px 18px 24px;color:white;background:radial-gradient(circle at 82% 18%,#a7483277,transparent 25%),radial-gradient(circle at 12% 90%,#c7943f66,transparent 28%),linear-gradient(145deg,#274432,#111d17)}
+.inner{max-width:1050px;margin:auto}.kicker{font-size:11px;text-transform:uppercase;letter-spacing:.18em;opacity:.75}h1{font-size:clamp(34px,8vw,58px);line-height:1.03;letter-spacing:-.04em;margin:8px 0 12px}.hero p{margin:0;color:#e7eee7;max-width:760px}.badges{display:flex;gap:7px;flex-wrap:wrap;margin-top:15px}.badge{font-size:12px;border:1px solid #ffffff38;background:#ffffff12;border-radius:999px;padding:6px 9px}
+.topbar{position:sticky;top:0;z-index:1000;background:#f3eee4ee;backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}.topbar .inner{display:flex;gap:7px;overflow:auto;padding:8px 12px}.tab{white-space:nowrap;border:0;background:#e6dccd;padding:8px 11px;border-radius:11px;color:#4b493f;text-decoration:none;font-size:13px;font-weight:700}.tab.primary{background:var(--dark);color:white}
+.alerts{max-width:1050px;margin:14px auto 0;padding:0 12px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.alert{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:10px 11px;font-size:12px;box-shadow:var(--shadow)}.alert b{display:block;color:var(--red);margin-bottom:2px}.alert.g b{color:var(--green)}
+.mapwrap{max-width:1050px;margin:12px auto 0;padding:0 12px;position:relative}.mapcard{background:var(--paper);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}#map{height:min(62vh,620px);min-height:430px;background:#e7e0d5}.maptools{display:flex;gap:7px;flex-wrap:wrap;padding:10px;border-top:1px solid var(--line)}.maptools button{border:0;border-radius:11px;padding:9px 11px;font-weight:700;font-size:13px;background:#ece3d5;color:#403f38}.maptools button.primary{background:var(--dark);color:white}.mapnote{padding:0 12px 11px;font-size:11px;color:var(--muted)}
+.number-icon{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;color:white;font-weight:800;border:3px solid #fff;box-shadow:0 4px 14px #0004}.green{background:var(--green)}.red{background:var(--red)}.blue{background:var(--blue)}.gray{background:#6b6d68}.gold{background:var(--gold)}
+.leaflet-popup-content-wrapper{border-radius:14px}.leaflet-popup-content{margin:11px 13px;min-width:180px}.pop-title{font-weight:800;margin-bottom:4px}.pop-small{font-size:12px;color:#666}.pop-btn{margin-top:8px;border:0;background:#17271f;color:white;padding:7px 9px;border-radius:9px;font-size:12px;font-weight:700}
+.layout{max-width:1050px;margin:18px auto 60px;padding:0 12px;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:14px}.maincol,.sidecol{display:flex;flex-direction:column;gap:12px}.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:15px;box-shadow:var(--shadow)}h2{font-size:22px;margin:0 0 10px}h3{font-size:17px;margin:0 0 6px}.small{font-size:12px;color:var(--muted)}.chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.chip{font-size:11px;background:#ece3d5;border-radius:999px;padding:5px 8px}.chip.goshuin{background:#ffe3d9;color:#7e2d1f;font-weight:800}.chip.must{background:#e5efe6;color:#274a31;font-weight:800}
+.leg{display:grid;grid-template-columns:58px 1fr;gap:10px;padding:11px 0;border-bottom:1px dashed var(--line)}.leg:last-child{border:0}.time{font-weight:800;color:var(--red);font-size:13px}.leg b{display:block;margin-bottom:3px}.route-detail{background:#f7f2e9;border-left:4px solid var(--green);padding:10px 11px;border-radius:0 11px 11px 0;margin-top:7px;font-size:13px}
+.deadline{background:#fff0e7;border:1px solid #edc2ad;border-radius:13px;padding:11px;font-size:13px}.deadline b{color:#8d341f}
+.steps{counter-reset:s}.step{position:relative;padding:0 0 14px 38px}.step:before{counter-increment:s;content:counter(s);position:absolute;left:0;top:0;width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:var(--green);color:white;font-weight:800;font-size:12px}.step:after{content:"";position:absolute;left:13px;top:29px;bottom:1px;width:1px;background:#cfc4b3}.step:last-child:after{display:none}.step p{margin:3px 0;font-size:13px}.step strong{font-size:14px}
+.btnrow{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.btn{border:0;border-radius:10px;background:var(--dark);color:white;text-decoration:none;padding:8px 10px;font-size:12px;font-weight:800}.btn.alt{background:#e8dfd1;color:#3d3c36}.btn.red{background:var(--red)}
+.checks label{display:flex;gap:9px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:13px}.checks label:last-child{border:0}.checks input{width:18px;height:18px;accent-color:var(--green)}
+#drawer{position:fixed;z-index:2000;right:0;top:0;height:100vh;width:min(510px,94vw);background:#fffaf0;border-left:1px solid var(--line);box-shadow:-20px 0 60px #0003;transform:translateX(105%);transition:.25s ease;overflow:auto;padding:0 0 30px}#drawer.open{transform:translateX(0)}.drawer-head{position:sticky;top:0;background:#fffaf0ee;backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:12px 14px;display:flex;justify-content:space-between;align-items:center;z-index:3}.drawer-head button{border:0;background:#e8dfd1;border-radius:50%;width:34px;height:34px;font-size:20px}.drawer-body{padding:16px}.drawer-body h2{font-size:26px}.drawer-section{margin:18px 0}.drawer-section h3{color:var(--green);font-size:14px;text-transform:uppercase;letter-spacing:.08em}.drawer-section p,.drawer-section li{font-size:14px}.drawer-section ol,.drawer-section ul{padding-left:20px}.goshuinbox{background:#fff0e8;border:1px solid #eab89f;border-radius:14px;padding:12px}.goshuinbox b{color:#8f341f}
+.overlay{position:fixed;inset:0;background:#0005;z-index:1900;display:none}.overlay.open{display:block}
+.source a{word-break:break-word}.source li{margin:6px 0;font-size:12px;color:var(--muted)}
+@media(max-width:820px){.alerts{grid-template-columns:1fr 1fr}.layout{grid-template-columns:1fr}.sidecol{order:-1}#map{height:58vh;min-height:390px}}
+@media(max-width:520px){.hero{padding-top:28px}.alerts{grid-template-columns:1fr}.mapwrap{padding:0 8px}.layout{padding:0 8px}.mapcard,.card{border-radius:16px}#map{height:57vh;min-height:360px}.leg{grid-template-columns:52px 1fr}}
+</style>
+</head>
+<body>
+<header class="hero"><div class="inner">
+<div class="kicker">Суббота · 28 ноября 2026 · Osaka → Minoh</div>
+<h1>Водопад, горный храм и тысячи дарум</h1>
+<p>Green View Tennoji → Minoh Park → редкое открытие Ryūan-ji → Minoh Falls → Katsuo-ji при дневном свете, на закате и в осенней подсветке.</p>
+<div class="badges"><span class="badge">🍁 пик момидзи</span><span class="badge">💧 33-метровый водопад</span><span class="badge">御朱印 2 храма</span><span class="badge">🌙 последняя субботняя подсветка</span></div>
+</div></header>
+
+<nav class="topbar"><div class="inner">
+<a class="tab primary" href="#map">Карта</a><a class="tab" href="#day">План дня</a><a class="tab" href="#transport">Транспорт</a><a class="tab" href="#inside">Внутри храмов</a><a class="tab" href="#backup">Если опоздали</a>
+</div></nav>
+
+<section class="alerts">
+<div class="alert g"><b>Ryūan-ji</b>Спецпоказ 10:30–16:00, последний вход 15:30. На осмотр ≈30 мин.</div>
+<div class="alert"><b>御朱印 Ryūan-ji</b>Храмовая канцелярия у ворот: ориентир 10:00–16:00.</div>
+<div class="alert"><b>御朱印 Katsuo-ji</b>General Reception / 納経所 №21. Завтра только до 17:30.</div>
+<div class="alert"><b>Katsuo-ji ночью</b>Подсветка после заката до 20:30, последний вход 20:00. Обычный дневной автобус назад заканчивается раньше.</div>
+</section>
+
+<section class="mapwrap">
+<div class="mapcard">
+<div id="map"></div>
+<div class="maptools">
+<button class="primary" onclick="fitRoute()">Показать весь маршрут</button>
+<button onclick="showMe()">📍 Показать меня</button>
+<button onclick="openStop('minoh')">Начать с Minoh</button>
+<button onclick="openStop('katsuoji')">Открыть Katsuo-ji</button>
+</div>
+<div class="mapnote">Линии на карте — схема последовательности, а не точная траектория дорожек. Для реального поворота нажимайте «Открыть навигацию» в карточке точки.</div>
+</div>
+</section>
+
+<main class="layout">
+<div class="maincol">
+<section class="card" id="day">
+<h2>План дня без провалов между точками</h2>
+<div class="leg"><div class="time">08:30</div><div><b>Выход из отеля</b>Идём к Dobutsuen-mae. Не к Ebisucho: сегодня удобнее Midosuji Line.</div></div>
+<div class="leg"><div class="time">~09:45</div><div><b>Minoh Station</b>После Umeda и пересадки в Ishibashi handai-mae выходим на конечной Minoh. Отсюда уже начинается прогулочный маршрут.</div></div>
+<div class="leg"><div class="time">10:00–10:25</div><div><b>Takimichi → Ryūan-ji</b>Идём только по основной прогулочной дороге вдоль реки. По пути можно купить momiji tempura, но Saikō-ji оставляем опциональным.</div></div>
+<div class="leg"><div class="time">10:30–11:10</div><div><b>Ryūan-ji + специальное открытие</b>Сначала храм и Bentendō, затем за ¥500 — гостевой корпус, Hōōkaku и сухой сад. Перед уходом — госюин.</div></div>
+<div class="leg"><div class="time">11:10–11:40</div><div><b>Ryūan-ji → Minoh Falls</b>Продолжаем той же Takimichi вверх. Разворачивать карты почти не нужно: река остаётся вашим ориентиром.</div></div>
+<div class="leg"><div class="time">11:40–12:05</div><div><b>Minoh Falls</b>Водопад, красный мост, передышка. Если мокро — не лезем на боковые лесные тропы.</div></div>
+<div class="leg"><div class="time">12:05–13:15</div><div><b>Назад к Minoh Station + быстрый обед</b>Возвращаемся тем же путём. Цель — не пропустить автобус в 13:33.</div></div>
+<div class="leg"><div class="time">13:33</div><div><b>Minoh Station → Minoh-Kayano</b>Hankyu Bus 22/23 в сторону 箕面萱野駅. В субботу удобный прямой рейс отправляется в :33 каждого часа.</div></div>
+<div class="leg"><div class="time">~14:00</div><div><b>Minoh-Kayano → Katsuo-ji</b>Ищем прямой автобус с крупной надписью 勝尾寺. Храм публикует частые прямые рейсы до 15:00; дорога около 20 минут.</div></div>
+<div class="leg"><div class="time">14:25–18:15</div><div><b>Katsuo-ji: день → сумерки → подсветка</b>Не спешим. До 17:30 обязательно забираем госюин, затем возвращаемся к красивым точкам на второй круг уже в огнях.</div></div>
+<div class="leg"><div class="time">после 18:00</div><div><b>Возвращение</b>Не рассчитываем на обычный Route 30. На входе в храм сразу фотографируем вечернюю транспортную схему. Предпочтение: Autumn Day & Night bus; резерв — бесплатный шаттл к Saito-Nishi или такси до Minoh-Kayano.</div></div>
+</section>
+
+<section class="card" id="transport">
+<h2>Транспорт: прямо как пройти</h2>
+<div class="steps">
+<div class="step"><strong>Отель → Dobutsuen-mae</strong><p>Пешком примерно 10–15 минут. На станции нужна <b>Midosuji Line, платформа 2</b>: направление Namba / Umeda / Shin-Osaka / Minoh-Kayano.</p><div class="btnrow"><a class="btn alt" href="https://www.google.com/maps/dir/?api=1&origin=Green+View+Tennoji+Osaka&destination=Dobutsuen-mae+Station&travelmode=walking">Пешком до метро</a></div></div>
+<div class="step"><strong>Dobutsuen-mae (M22) → Umeda (M16)</strong><p>Садитесь на любой поезд, который идёт минимум до Umeda. Ехать без пересадок. Выходя, следуйте указателям <b>Hankyu Railway / 阪急電車</b>, а не JR.</p></div>
+<div class="step"><strong>Umeda → Hankyu Osaka-Umeda</strong><p>Это пешеходный переход внутри огромного узла. Закладываем 10–15 минут. Нужна <b>Takarazuka Main Line / 宝塚本線</b>.</p></div>
+<div class="step"><strong>Osaka-Umeda → Ishibashi handai-mae</strong><p>Берём поезд в сторону Takarazuka, который останавливается на <b>石橋阪大前</b>. Удобен Express. Не путайте с Kyoto Line.</p></div>
+<div class="step"><strong>Ishibashi handai-mae → Minoh</strong><p><b>Из станции не выходим.</b> Ищем <b>Minoh Line / 箕面線</b>, направление Minoh. По официальной схеме поезда на Minoh отправляются с <b>платформы 5</b>. Три остановки — и вы на конечной.</p></div>
+<div class="step"><strong>Minoh Station → Ryūan-ji → Falls</strong><p>После турникетов идите на север к парку и дальше по <b>滝道 / Takimichi</b>. Это главная мощёная дорожка вдоль Minoh River. До Ryūan-ji около 15 минут, до водопада около 40–45 минут от станции.</p></div>
+<div class="step"><strong>После водопада → Minoh Station</strong><p>Возвращаемся <b>тем же маршрутом</b>. Не пытайтесь идти пешком от водопада к Katsuo-ji: на карте они выглядят близко, но нормальный туристический переход между ними — не наша прогулочная дорожка.</p></div>
+<div class="step"><strong>Minoh Station → Minoh-Kayano</strong><p>На автобусной остановке у станции ищем Hankyu Bus <b>22/23 → 箕面萱野駅</b>. Плановый субботний рейс: <b>13:33</b>; резерв — 14:33.</p></div>
+<div class="step"><strong>Minoh-Kayano → Katsuo-ji</strong><p>У станции ищите прямой автобус <b>勝尾寺</b>. Официальная страница храма сейчас показывает регулярные прямые рейсы с утра до 15:00 плюс дополнительные автобусы при потоке.</p></div>
+<div class="step"><strong>Katsuo-ji → Osaka вечером</strong><p><b>Сразу после приезда сфотографируйте вечерние автобусы.</b> Обычный Route 30 заканчивает обратную работу около 17 часов. Для подсветки предусмотрены специальные автобусы. Если с ними неудобно — бесплатный шаттл Saito-Nishi ↔ Katsuo-ji ходит по ноябрьским выходным примерно раз в час до 19:00; крайний резерв — такси до Minoh-Kayano.</p></div>
+</div>
+</section>
+
+<section class="card" id="inside">
+<h2>Внутри храмов: не просто «зашли и вышли»</h2>
+<p class="small">Нажми на храм на карте — откроется полноценный внутренний маршрут. Ниже только короткая шпаргалка.</p>
+<div class="route-detail"><b>Ryūan-ji:</b> Sanmon → Bentendō → Reception/御朱印 → специальный показ: Kyakuden → Hōōkaku → сухой сад → обратно на Takimichi.</div>
+<div class="route-detail"><b>Katsuo-ji:</b> Main Gate №5 → Purification Bridge №6 → Benzaiten №7 → Circle of Wisdom №8 → Ichigan Fudō №10 → Daruma Shelf №11 → Main Hall №18 → <b>御朱印 №21</b> → Tahōtō №24 → второй круг в подсветке.</div>
+</section>
+
+<section class="card" id="backup">
+<h2>Если день пошёл не по плану</h2>
+<div class="deadline"><b>Отставание до 30 минут:</b> ничего не режем. Просто сокращаем обед и не заходим в Saikō-ji.</div>
+<div class="deadline" style="margin-top:8px"><b>Отставание 45–60 минут:</b> в Ryūan-ji смотрим основное + спецпоказ без долгих остановок. Автобус Minoh → Minoh-Kayano берём 14:33.</div>
+<div class="deadline" style="margin-top:8px"><b>Сильный дождь:</b> основная Takimichi мощёная, но будет скользко. Не используем лесные ответвления. Если дождь серьёзный, лучше сократить время у водопада, а не Katsuo-ji: подсветка — редкая часть дня.</div>
+<div class="deadline" style="margin-top:8px"><b>Самое важное ограничение:</b> до 17:30 подойти к 納経所 №21 в Katsuo-ji за госюином.</div>
+</section>
+</div>
+
+<aside class="sidecol">
+<section class="card">
+<h2>Что обязательно</h2>
+<div class="checks">
+<label><input type="checkbox" data-save="r1"> Пройти Takimichi вдоль реки</label>
+<label><input type="checkbox" data-save="r2"> Ryūan-ji: Bentendō</label>
+<label><input type="checkbox" data-save="r3"> Ryūan-ji: специальный сухой сад</label>
+<label><input type="checkbox" data-save="r4"> 御朱印 в Ryūan-ji</label>
+<label><input type="checkbox" data-save="r5"> Minoh Falls + красный мост</label>
+<label><input type="checkbox" data-save="r6"> Katsuo-ji: Daruma Shelf</label>
+<label><input type="checkbox" data-save="r7"> Katsuo-ji: Main Hall</label>
+<label><input type="checkbox" data-save="r8"> 御朱印 в Katsuo-ji до 17:30</label>
+<label><input type="checkbox" data-save="r9"> Tahōtō на закате</label>
+<label><input type="checkbox" data-save="r10"> Вернуться к пруду после включения подсветки</label>
+</div>
+</section>
+<section class="card">
+<h2>Почему этот маршрут связан</h2>
+<p>Это не случайные «водопад + храм». Minoh — один из старых центров горного аскетизма. Легенда Ryūan-ji связывает водопад с Эн-но Гёдзя: именно здесь он якобы практиковал и получил откровение Бэндзайтэн. Katsuo-ji возник в той же горной религиозной среде, но со временем стал знаменит прежде всего как храм «победы над собой» и дарум.</p>
+</section>
+<section class="card source">
+<h2>Официальные источники</h2>
+<ul>
+<li><a href="https://minohkankou.net/information/momiji-matsuri/">Minoh Tourism: Momiji Festival 2026</a></li>
+<li><a href="https://www.ryuanji.org/haikan">Ryūan-ji: специальное открытие</a></li>
+<li><a href="https://www.ryuanji.org/map">Ryūan-ji: карта территории</a></li>
+<li><a href="https://katsuo-ji-temple.or.jp/seasons/map.php">Katsuo-ji: официальная карта</a></li>
+<li><a href="https://katsuo-ji-temple.or.jp/news/13749/">Katsuo-ji: часы госюина в дни подсветки</a></li>
+<li><a href="https://katsuo-ji-temple.or.jp/autumn/">Katsuo-ji: Autumn Evening Visit 2026</a></li>
+</ul>
+</section>
+</aside>
+</main>
+
+<div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+<aside id="drawer" aria-live="polite">
+<div class="drawer-head"><b>Гид по точке</b><button onclick="closeDrawer()" aria-label="Закрыть">×</button></div>
+<div class="drawer-body" id="drawerBody"></div>
+</aside>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+var stops={
+hotel:{n:"0",title:"Green View Tennoji",sub:"Старт · около 08:30",lat:34.6553,lng:135.5068,color:"gray",short:"Отель → Dobutsuen-mae пешком.",nav:"https://www.google.com/maps/dir/?api=1&origin=Green+View+Tennoji+Osaka&destination=Dobutsuen-mae+Station&travelmode=walking"},
+dobutsu:{n:"1",title:"Dobutsuen-mae",sub:"Midosuji Line · M22",lat:34.6487,lng:135.5048,color:"blue",short:"Платформа 2 → Umeda / Minoh-Kayano.",nav:"https://www.google.com/maps/search/?api=1&query=Dobutsuen-mae+Station"},
+umeda:{n:"2",title:"Umeda → Hankyu Osaka-Umeda",sub:"Пеший переход внутри узла",lat:34.7025,lng:135.4959,color:"blue",short:"Следовать указателям Hankyu Railway / 阪急電車.",nav:"https://www.google.com/maps/search/?api=1&query=Hankyu+Osaka-Umeda+Station"},
+ishibashi:{n:"3",title:"Ishibashi handai-mae",sub:"Пересадка на Minoh Line",lat:34.8088,lng:135.4454,color:"blue",short:"Не выходить. Платформа 5 → 箕面.",nav:"https://www.google.com/maps/search/?api=1&query=Ishibashi+handai-mae+Station"},
+minoh:{n:"4",title:"Minoh Station",sub:"Начало прогулки · ~09:45",lat:34.8343,lng:135.4684,color:"green",short:"После турникетов двигайтесь к 滝道 / Takimichi.",nav:"https://www.google.com/maps/search/?api=1&query=Minoh+Station+Osaka"},
+ryuanji:{n:"5",title:"瀧安寺 · Ryūan-ji",sub:"10:30–11:10 · спецпоказ",lat:34.84252,lng:135.47243,color:"red",short:"Старый центр горного аскетизма, Бэндзайтэн и редкое открытие сухого сада.",nav:"https://www.google.com/maps/dir/?api=1&origin=Minoh+Station&destination=Ryuanji+Temple+Minoh&travelmode=walking"},
+falls:{n:"6",title:"箕面大滝 · Minoh Falls",sub:"~11:40 · 33 м",lat:34.85389,lng:135.47197,color:"green",short:"Главная природная точка: водопад и Takimibashi.",nav:"https://www.google.com/maps/dir/?api=1&origin=Ryuanji+Temple+Minoh&destination=Minoh+Falls&travelmode=walking"},
+kayano:{n:"7",title:"Minoh-Kayano",sub:"~13:45 · пересадка на автобус",lat:34.83239,lng:135.48902,color:"blue",short:"Ищите прямой автобус с надписью 勝尾寺.",nav:"https://www.google.com/maps/search/?api=1&query=Minoh-Kayano+Station"},
+katsuoji:{n:"8",title:"勝尾寺 · Katsuo-ji",sub:"14:25–18:15+ · день и подсветка",lat:34.8660,lng:135.4907,color:"red",short:"Храм победы, дарумы, Main Hall, Tahōtō и осенняя подсветка.",nav:"https://www.google.com/maps/search/?api=1&query=Katsuoji+Temple"}
+};
+var detail={
+minoh:'<h2>Minoh Station</h2><div class="chips"><span class="chip must">старт Takimichi</span><span class="chip">туалеты / магазины</span></div><div class="drawer-section"><h3>Что делать после турникетов</h3><p>Не ищите автобус к водопаду. Из станции выходите пешком на север и ищите указатели <b>箕面公園 / 箕面大滝 / 滝道</b>. Через несколько минут начинается прогулочная дорога вдоль реки.</p></div><div class="drawer-section"><h3>Навигация дальше</h3><p>Главное правило на первой половине маршрута: держитесь Takimichi и реки. До Ryūan-ji около 15 минут; до водопада от станции 40–45 минут.</p></div><div class="btnrow"><a class="btn" href="'+stops.minoh.nav+'">Minoh Station в Maps</a><button class="btn alt" onclick="openStop(\'ryuanji\')">Следующая: Ryūan-ji →</button></div>',
+ryuanji:'<h2>瀧安寺 · Ryūan-ji</h2><div class="chips"><span class="chip must">обязательно</span><span class="chip goshuin">御朱印 есть</span><span class="chip">спецпоказ ¥500</span></div><div class="drawer-section"><h3>Что это</h3><p>Один из старейших центров горного аскетизма Мино. Храм связывает своё начало с 658 годом и Эн-но Гёдзя: по преданию он практиковал у Minoh Falls, получил откровение Бэндзайтэн и установил её образ. Поэтому водопад и храм исторически — одна история, а не две отдельные достопримечательности.</p><p>Храм также называет себя родиной японской лотереи: здесь проводили <i>Minoh Tomi</i>, раннюю форму розыгрыша.</p></div><div class="drawer-section"><h3>Как пройти внутри</h3><ol><li><b>Sanmon / 山門.</b> У ворот не уходите сразу дальше по Takimichi.</li><li><b>Bentendō / 本堂・弁天堂 №1.</b> Главная святыня — Бэндзайтэн; здание сочетает буддийскую и синтоистскую форму.</li><li><b>Reception / 受付 №11.</b> Здесь спрашиваем про госюин и покупаем билет на спецпоказ.</li><li><b>Kyakuden (Enmanden).</b> Огромный гостевой корпус конца XVII века, около ста татами; строился для паломников и горных аскетов.</li><li><b>Hōōkaku.</b> Архитектура Такэды Гоити; зарегистрированное культурное наследие. Отсюда хороший вид на ущелье.</li><li><b>Сухой сад.</b> Сад XX века создан вокруг местной традиции поклонения драконам.</li><li>Выходим обратно к Takimichi и продолжаем вверх к водопаду.</li></ol></div><div class="goshuinbox"><b>御朱印:</b> в <b>受付 / храмовой канцелярии №11 у Sanmon</b>. Официальные часы канцелярии 10:00–16:00. Если сотрудника нет у стойки, показывайте «御朱印はどこですか？».</div><div class="drawer-section"><h3>Что не пропустить завтра</h3><p>Специально открыты <b>Kyakuden, Hōōkaku и сухой сад</b> — 10:30–16:00, последний вход 15:30. Обычно эти пространства не являются обычной частью прогулки по Takimichi.</p></div><div class="btnrow"><a class="btn" href="'+stops.ryuanji.nav+'">Навигация сюда</a><a class="btn alt" href="https://www.ryuanji.org/map">Официальная карта</a><button class="btn alt" onclick="openStop(\'falls\')">Дальше к водопаду →</button></div>',
+falls:'<h2>箕面大滝 · Minoh Falls</h2><div class="chips"><span class="chip must">главная природная точка</span><span class="chip">33 м</span><span class="chip">бесплатно</span></div><div class="drawer-section"><h3>Что это</h3><p>Водопад высотой 33 м — исторический центр всей местности. Минох был местом практик горных аскетов задолго до того, как стал прогулочным парком. По храмовой традиции именно здесь Эн-но Гёдзя достиг религиозного прозрения, после чего возник Ryūan-ji.</p></div><div class="drawer-section"><h3>Как смотреть</h3><ol><li>Сначала выйдите на главную площадку перед водопадом.</li><li>Пройдите к красному <b>Takimibashi</b>: это классический ракурс.</li><li>Дайте себе 20–25 минут — не нужно искать дополнительный «вход» или отдельную тропу.</li><li>После этого <b>возвращаемся назад той же Takimichi до Minoh Station</b>.</li></ol></div><div class="drawer-section"><h3>Почему не идём отсюда пешком в Katsuo-ji</h3><p>На общей карте храмы выглядят близко, но туристическая Takimichi не превращается в простой городской переход к Katsuo-ji. Для нашего дня безопаснее и предсказуемее вернуться на станцию и ехать через Minoh-Kayano.</p></div><div class="btnrow"><a class="btn" href="'+stops.falls.nav+'">Навигация к водопаду</a><button class="btn alt" onclick="openStop(\'kayano\')">Дальше: транспорт →</button></div>',
+kayano:'<h2>Minoh-Kayano → Katsuo-ji</h2><div class="chips"><span class="chip">автобус ≈20 мин</span><span class="chip must">не пропустить дневной рейс</span></div><div class="drawer-section"><h3>Как сюда попасть из Minoh</h3><p>У Hankyu Minoh Station садитесь на автобус <b>22/23 → 箕面萱野駅</b>. Наш ориентир — <b>13:33</b>. Если день сдвинулся, следующий удобный резерв — 14:33.</p></div><div class="drawer-section"><h3>На Minoh-Kayano</h3><p>После высадки ищите остановку прямого автобуса к храму и надпись <b>勝尾寺</b>. Не садитесь просто на любой автобус «в горы». По текущей официальной информации храма в сезон ходят частые прямые рейсы до 15:00 и дополнительные автобусы по загрузке.</p></div><div class="deadline"><b>Важно:</b> вечером обычный регулярный автобус обратно уже не подходит. Сразу при приезде в Katsuo-ji сфотографируйте расписание специальных вечерних автобусов.</div><div class="btnrow"><a class="btn" href="'+stops.kayano.nav+'">Станция в Maps</a><button class="btn alt" onclick="openStop(\'katsuoji\')">Открыть гид Katsuo-ji →</button></div>',
+katsuoji:'<h2>勝尾寺 · Katsuo-ji</h2><div class="chips"><span class="chip must">главная точка дня</span><span class="chip goshuin">御朱印 до 17:30</span><span class="chip">подсветка до 20:30</span></div><div class="drawer-section"><h3>Что это</h3><p>Горный буддийский храм с историей примерно 1300 лет и 23-я остановка паломничества Saigoku Kannon. Его нынешняя слава связана с «победой»: в IX веке настоятель молился о выздоровлении императора Сэйва; после исцеления храм получил имя «победивший царя». Монахи сочли такую формулировку слишком дерзкой и заменили иероглиф 王 («царь») на 尾, сохранив чтение Katsuo-ji.</p><p>Сегодня храм объясняет «победу» не как победу над другим человеком, а как преодоление собственной слабости — отсюда тысячи <b>kachi-daruma</b>.</p></div><div class="drawer-section"><h3>Наш маршрут внутри — по номерам официальной карты</h3><ol><li><b>№5 Main Gate / 山門.</b> Ворота восстановлены Тоётоми Хидэёри в 1603 году. На подсветке вернитесь к ним ещё раз.</li><li><b>№6 Purification Bridge / お清め橋.</b> Через туман на мосту символически «очищаются» перед входом в сакральную часть.</li><li><b>№7 Benzaiten.</b> Связана с водой, искусствами, музыкой и знаниями.</li><li><b>№8 Circle of Wisdom / 智慧の環.</b> Если есть желание выполнить ритуал: семь кругов по часовой стрелке к центру и семь обратно.</li><li><b>№10 Ichigan Fudō.</b> «Фудо одного желания»: здесь традиционно формулируют одну конкретную просьбу.</li><li><b>№11 Kachi-Daruma Votive Shelf.</b> Огромные полки — это дарумы людей, которые вернулись после исполнения цели.</li><li><b>№18 Main Hall / 本堂.</b> Главный зал с Одиннадцатиликим Тысячеруким Канноном. Это религиозный центр комплекса, не пропускаем.</li><li><b>№19 Place of Giving.</b> Здесь покупают дарумы, амулеты и daruma-mikuji; госюин НЕ здесь.</li><li><b>№21 General Reception / 納経所.</b> <b>Вот здесь ваш госюин.</b> Сделайте это до 17:30.</li><li><b>№24 Tahōtō Pagoda.</b> Хорошая верхняя точка и вид через красные клёны. Отсюда удобно поймать переход к сумеркам.</li></ol></div><div class="goshuinbox"><b>御朱印:</b> <b>№21 General Reception / 総合受付所（納経所）</b>, рядом с верхней храмовой зоной. В день осенней подсветки 28 ноября приём <b>8:00–17:30</b>. После 18:00 госюины не выдают.</div><div class="drawer-section"><h3>Как смотреть подсветку</h3><p>Не стойте после заката только наверху. После Tahōtō и Main Hall <b>спуститесь обратно к Daruma Shelf, Main Gate и пруду</b>: ночью отражения и красные ворота работают лучше всего. Это тот случай, когда второй круг по храму оправдан.</p></div><div class="drawer-section"><h3>Возвращение</h3><p>Сразу после прибытия найдите автобусную зону <b>№26</b> и сфотографируйте вечернее расписание. Для ночного посещения храм рекомендует специальные Autumn Day & Night buses. Если нужного рейса нет, используйте бесплатный ноябрьский шаттл до Saito-Nishi или такси до Minoh-Kayano.</p></div><div class="btnrow"><a class="btn" href="'+stops.katsuoji.nav+'">Katsuo-ji в Maps</a><a class="btn alt" href="https://katsuo-ji-temple.or.jp/seasons/map.php">Официальная карта</a></div>'
+};
+
+var map=L.map('map',{zoomControl:true}).setView([34.845,135.485],12);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
+var markers={},all=[];
+Object.keys(stops).forEach(function(k){
+ var s=stops[k];
+ var icon=L.divIcon({className:'',html:'<div class="number-icon '+s.color+'">'+s.n+'</div>',iconSize:[32,32],iconAnchor:[16,16]});
+ var m=L.marker([s.lat,s.lng],{icon:icon}).addTo(map);
+ m.bindPopup('<div class="pop-title">'+s.title+'</div><div class="pop-small">'+s.sub+'<br>'+s.short+'</div><button class="pop-btn" onclick="openStop(\''+k+'\')">Открыть гид</button>');
+ markers[k]=m;all.push([s.lat,s.lng]);
+});
+L.polyline([[stops.hotel.lat,stops.hotel.lng],[stops.dobutsu.lat,stops.dobutsu.lng],[stops.umeda.lat,stops.umeda.lng],[stops.ishibashi.lat,stops.ishibashi.lng],[stops.minoh.lat,stops.minoh.lng]],{color:'#476b83',weight:4,opacity:.7,dashArray:'8 7'}).addTo(map);
+L.polyline([[stops.minoh.lat,stops.minoh.lng],[stops.ryuanji.lat,stops.ryuanji.lng],[stops.falls.lat,stops.falls.lng],[stops.ryuanji.lat,stops.ryuanji.lng],[stops.minoh.lat,stops.minoh.lng]],{color:'#365941',weight:5,opacity:.8}).addTo(map);
+L.polyline([[stops.minoh.lat,stops.minoh.lng],[stops.kayano.lat,stops.kayano.lng],[stops.katsuoji.lat,stops.katsuoji.lng]],{color:'#a74832',weight:4,opacity:.75,dashArray:'9 6'}).addTo(map);
+function fitRoute(){map.fitBounds(all,{padding:[25,25]});}
+function openStop(k){
+ if(detail[k]){document.getElementById('drawerBody').innerHTML=detail[k];}
+ else{var s=stops[k];document.getElementById('drawerBody').innerHTML='<h2>'+s.title+'</h2><p>'+s.short+'</p><div class="btnrow"><a class="btn" href="'+s.nav+'">Открыть навигацию</a></div>';}
+ document.getElementById('drawer').classList.add('open');document.getElementById('overlay').classList.add('open');
+}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('open');}
+var meMarker;
+function showMe(){
+ if(!navigator.geolocation){alert('Геолокация не поддерживается браузером.');return;}
+ navigator.geolocation.getCurrentPosition(function(p){
+  if(meMarker)map.removeLayer(meMarker);
+  meMarker=L.circleMarker([p.coords.latitude,p.coords.longitude],{radius:9,color:'#fff',weight:3,fillColor:'#2069d8',fillOpacity:1}).addTo(map).bindPopup('Вы здесь');
+  map.setView([p.coords.latitude,p.coords.longitude],15);meMarker.openPopup();
+ },function(){alert('Браузер не дал доступ к геолокации. Используйте кнопки Google Maps в карточках точек.');},{enableHighAccuracy:true,timeout:8000});
+}
+document.querySelectorAll('input[data-save]').forEach(function(el){
+ var key='minoh28-'+el.getAttribute('data-save');el.checked=localStorage.getItem(key)==='1';
+ el.addEventListener('change',function(){localStorage.setItem(key,el.checked?'1':'0');});
+});
+fitRoute();
+</script>
+</body></html>
