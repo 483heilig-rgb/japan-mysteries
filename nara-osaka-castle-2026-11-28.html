@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#263a2e">
+<title>Нара → Osaka Castle · 28 ноября 2026</title>
+<meta name="description" content="Интерактивный маршрут по Наре до 13:30–14:00 и быстрый переезд к Osaka Castle. Карта, внутренние маршруты, госюины и пояснения.">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{--bg:#f4efe4;--paper:#fffaf1;--ink:#24261f;--muted:#6f7168;--green:#365743;--red:#a54a34;--gold:#b78a3f;--blue:#496c86;--line:#ddd0bd;--dark:#1d2d25;--shadow:0 18px 45px #25271f14}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;line-height:1.55}button,a{font:inherit}a{color:inherit}
+.hero{padding:34px 18px 26px;color:#fff;background:radial-gradient(circle at 82% 15%,#a54a3477,transparent 25%),radial-gradient(circle at 12% 90%,#b78a3f55,transparent 28%),linear-gradient(145deg,#384b39,#17251e)}
+.inner{max-width:1060px;margin:auto}.kicker{font-size:11px;letter-spacing:.17em;text-transform:uppercase;opacity:.78}h1{font-size:clamp(34px,8vw,58px);line-height:1.03;letter-spacing:-.04em;margin:8px 0 12px}.hero p{max-width:760px;margin:0;color:#eaf0eb}.badges{display:flex;gap:7px;flex-wrap:wrap;margin-top:15px}.badge{border:1px solid #ffffff35;background:#ffffff13;border-radius:999px;padding:6px 9px;font-size:12px}
+.topbar{position:sticky;top:0;z-index:1000;background:#f4efe4ee;backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}.topbar .inner{display:flex;gap:6px;overflow:auto;padding:8px 12px}.tab{white-space:nowrap;text-decoration:none;font-size:13px;font-weight:800;padding:8px 11px;border-radius:11px;background:#e7ddcf}.tab.primary{background:var(--dark);color:white}
+.alerts{max-width:1060px;margin:14px auto 0;padding:0 12px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.alert{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:10px 11px;font-size:12px;box-shadow:var(--shadow)}.alert b{display:block;color:var(--red);margin-bottom:2px}.alert.g b{color:var(--green)}
+.mapwrap{max-width:1060px;margin:12px auto 0;padding:0 12px}.mapcard{background:var(--paper);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}#map{height:min(60vh,600px);min-height:390px}.maptools{display:flex;gap:7px;flex-wrap:wrap;padding:10px;border-top:1px solid var(--line)}.maptools button{border:0;border-radius:10px;padding:9px 11px;background:#ece3d6;font-weight:800;font-size:13px}.maptools .primary{background:var(--dark);color:white}.mapnote{padding:0 12px 11px;color:var(--muted);font-size:11px}
+.num{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;color:white;font-weight:900;border:3px solid white;box-shadow:0 4px 13px #0004}.green{background:var(--green)}.red{background:var(--red)}.blue{background:var(--blue)}.gold{background:var(--gold)}.gray{background:#666b66}
+.leaflet-popup-content-wrapper{border-radius:14px}.leaflet-popup-content{margin:11px 13px;min-width:190px}.pt{font-weight:900}.ps{font-size:12px;color:#666}.pb{margin-top:8px;border:0;border-radius:9px;background:var(--dark);color:#fff;padding:7px 9px;font-size:12px;font-weight:800}
+.layout{max-width:1060px;margin:18px auto 60px;padding:0 12px;display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:14px}.main,.side{display:flex;flex-direction:column;gap:12px}.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:15px;box-shadow:var(--shadow)}h2{font-size:22px;margin:0 0 10px}h3{font-size:17px;margin:0 0 6px}.small{font-size:12px;color:var(--muted)}
+.leg{display:grid;grid-template-columns:58px 1fr;gap:10px;padding:11px 0;border-bottom:1px dashed var(--line)}.leg:last-child{border:0}.time{font-size:13px;color:var(--red);font-weight:900}.leg b{display:block;margin-bottom:3px}.route{background:#f6f1e8;border-left:4px solid var(--green);padding:10px 11px;border-radius:0 11px 11px 0;font-size:13px;margin-top:7px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.chip{background:#ece3d5;border-radius:999px;padding:5px 8px;font-size:11px}.chip.must{background:#e5efe7;color:#294b34;font-weight:900}.chip.goshuin{background:#ffe4db;color:#812f21;font-weight:900}
+.goshuinbox{background:#fff0e9;border:2px solid #d87252;border-radius:14px;padding:13px;margin:12px 0}.g-title{font-weight:900;color:#8d3422;margin-bottom:7px}.g-title:before{content:"御朱印";background:#a54a34;color:white;padding:3px 6px;border-radius:8px;font-size:11px;margin-right:7px}.g-grid{display:grid;grid-template-columns:68px 1fr;gap:5px 8px;font-size:13px}.g-grid b{color:#5a2b22}
+.fast{background:#fff1e7;border:1px solid #e9bba5;border-radius:14px;padding:12px}.fast b{color:#8e3524}.checks label{display:flex;gap:9px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:13px}.checks label:last-child{border:0}.checks input{width:18px;height:18px;accent-color:var(--green)}
+.btnrow{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.btn{border:0;border-radius:10px;background:var(--dark);color:white;text-decoration:none;padding:8px 10px;font-size:12px;font-weight:900}.btn.alt{background:#e8dfd2;color:#3d3b35}
+#drawer{position:fixed;right:0;top:0;height:100vh;width:min(520px,94vw);background:#fffaf1;z-index:2000;transform:translateX(105%);transition:.25s ease;overflow:auto;box-shadow:-20px 0 60px #0003;border-left:1px solid var(--line)}#drawer.open{transform:translateX(0)}.drawer-head{position:sticky;top:0;z-index:3;background:#fffaf1ee;backdrop-filter:blur(10px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:12px 14px}.drawer-head button{border:0;background:#e7ddcf;border-radius:50%;width:34px;height:34px;font-size:20px}.drawer-body{padding:16px 16px 30px}.drawer-body h2{font-size:26px}.drawer-section{margin:17px 0}.drawer-section h3{font-size:13px;color:var(--green);text-transform:uppercase;letter-spacing:.08em}.drawer-section p,.drawer-section li{font-size:14px}.drawer-section ol,.drawer-section ul{padding-left:20px}.overlay{position:fixed;inset:0;background:#0005;z-index:1900;display:none}.overlay.open{display:block}
+@media(max-width:840px){.alerts{grid-template-columns:1fr 1fr}.layout{grid-template-columns:1fr}.side{order:-1}}
+@media(max-width:520px){.alerts{grid-template-columns:1fr}.mapwrap,.layout{padding:0 8px}.mapcard,.card{border-radius:16px}#map{height:56vh;min-height:350px}.leg{grid-template-columns:52px 1fr}}
+</style>
+</head>
+<body>
+<header class="hero"><div class="inner">
+<div class="kicker">Суббота · 28 ноября 2026 · сейчас вы уже едете в Нару</div>
+<h1>Нара до обеда → Osaka Castle</h1>
+<p>Короткий, но содержательный маршрут: олени и парк → Tōdai-ji → Nigatsu-dō → Kasuga Taisha → быстрый выход к Kintetsu-Nara → Osaka Castle примерно к 15:00.</p>
+<div class="badges"><span class="badge">🦌 священные олени</span><span class="badge">🛕 древние храмы</span><span class="badge">御朱印 печати</span><span class="badge">🏯 к замку после Нары</span></div>
+</div></header>
+
+<nav class="topbar"><div class="inner">
+<a class="tab primary" href="#map">Карта</a><a class="tab" href="#day">План</a><a class="tab" href="#inside">Внутри</a><a class="tab" href="#return">В Осаку</a><a class="tab" href="#fast">Если опаздываем</a>
+</div></nav>
+
+<section class="alerts">
+<div class="alert g"><b>Tōdai-ji</b>Буддийский храмовый комплекс. Главное: Nandaimon → Daibutsuden → Nigatsu-dō.</div>
+<div class="alert"><b>御朱印 Tōdai-ji</b>Берём в Daibutsuden — Зале Великого Будды.</div>
+<div class="alert g"><b>Kasuga Taisha</b>Синтоистское святилище. Каменные и бронзовые фонари + связь с оленями.</div>
+<div class="alert"><b>Цель выхода</b>Уйти из Kasuga Taisha примерно 13:00–13:15, чтобы быть у Osaka Castle около 15:00.</div>
+</section>
+
+<section class="mapwrap">
+<div class="mapcard">
+<div id="map"></div>
+<div class="maptools">
+<button class="primary" onclick="fitNara()">Показать Нарy</button>
+<button onclick="fitAll()">Нара + Osaka Castle</button>
+<button onclick="showMe()">📍 Показать меня</button>
+<button onclick="openStop('todaiji')">Tōdai-ji</button>
+<button onclick="openStop('kasuga')">Kasuga Taisha</button>
+</div>
+<div class="mapnote">Линии — схема порядка посещения, а не точная траектория дорожек. Для реального поворота используйте кнопки Google Maps внутри карточек.</div>
+</div>
+</section>
+
+<main class="layout">
+<div class="main">
+<section class="card" id="day">
+<h2>План дня</h2>
+<div class="leg"><div class="time">~10:15</div><div><b>Kintetsu-Nara — железнодорожная станция</b>Если поезд приходит сюда, выходите через East Ticket Gate / Exit 2. Если вы приехали на JR Nara, нажмите на станцию на карте — там есть запасной вариант.</div></div>
+<div class="leg"><div class="time">10:20–10:35</div><div><b>Kōfuku-ji — буддийский храм</b>Короткая остановка по пути. Это храм рода Фудзивара; знаменитая пятиярусная пагода сейчас в большой реставрации, поэтому внутрь сегодня не углубляемся.</div></div>
+<div class="leg"><div class="time">10:35–10:55</div><div><b>Nara Park — исторический парк</b>Идём через парк к Tōdai-ji, знакомимся с оленями. Они здесь не просто туристический аттракцион: в традиции Kasuga Taisha это посланники божества.</div></div>
+<div class="leg"><div class="time">10:55–11:50</div><div><b>Tōdai-ji — буддийский храмовый комплекс</b>Nandaimon — Великие южные ворота → Daibutsuden — Зал Великого Будды. Здесь же берём госюин.</div></div>
+<div class="leg"><div class="time">11:50–12:15</div><div><b>Nigatsu-dō — храмовый зал внутри Tōdai-ji</b>Не возвращаемся к главному входу: от Daibutsuden идём на северо-восток и вверх по указателям 二月堂. Поднимаемся на открытую веранду с видом на Нару.</div></div>
+<div class="leg"><div class="time">12:15–12:45</div><div><b>Nigatsu-dō → Kasuga Taisha</b>Спускаемся и идём на юг через восточную часть Nara Park. По мере приближения к святилищу начнут появляться длинные ряды каменных фонарей.</div></div>
+<div class="leg"><div class="time">12:45–13:15</div><div><b>Kasuga Taisha — синтоистское святилище</b>South Gate → красные галереи → главное святилище → бронзовые фонари → госюин. Special Worship за ¥700 только если идём по графику.</div></div>
+<div class="leg"><div class="time">13:15+</div><div><b>Выход из Нары</b>Автобус от Kasuga Taisha Honden к Kintetsu-Nara; если ждать долго — такси. Затем Kintetsu → Tsuruhashi → JR Loop Line → Morinomiya → Osaka Castle.</div></div>
+</section>
+
+<section class="card" id="inside">
+<h2>Как двигаться внутри главных мест</h2>
+<div class="route"><b>Tōdai-ji — буддийский храмовый комплекс:</b> Nandaimon — Великие южные ворота → статуи Niō — деревянные храмовые стражи → Daibutsuden — Зал Великого Будды → 御朱印 → выход сбоку → указатели 二月堂 → Nigatsu-dō — храмовый зал на склоне.</div>
+<div class="route"><b>Kasuga Taisha — синтоистское святилище:</b> каменные фонари на подходе → South Gate — южные ворота → красные коридоры → основная молитвенная зона → бронзовые фонари → 御朱印 → остановка Kasuga Taisha Honden.</div>
+<p class="small">Нажмите соответствующую точку на карте: там более подробный гид с пояснением каждого названия.</p>
+</section>
+
+<section class="card" id="return">
+<h2>Нара → Osaka Castle: как ехать</h2>
+<div class="route"><b>1. Kasuga Taisha → Kintetsu-Nara.</b> Ищите остановку <b>春日大社本殿 / Kasuga Taisha Honden</b>. Автобус экономит около 15–20 минут по сравнению с пешим возвращением. Если ближайший ждать больше 10–12 минут, при нашем графике разумнее взять такси до Kintetsu-Nara.</div>
+<div class="route"><b>2. Kintetsu-Nara → Tsuruhashi.</b> Берите быстрый поезд в сторону Osaka-Namba / Kobe-Sannomiya, который останавливается на <b>Tsuruhashi / 鶴橋</b>. Выходить раньше не нужно.</div>
+<div class="route"><b>3. Tsuruhashi → JR.</b> Не выходите на улицу. Следуйте указателям <b>JR Osaka Loop Line / 大阪環状線</b>.</div>
+<div class="route"><b>4. JR Tsuruhashi → Morinomiya.</b> Нужна сторона в направлении <b>Kyobashi / Osaka</b>. Проезжаете Tamatsukuri и выходите на <b>Morinomiya / 森ノ宮</b>.</div>
+<div class="route"><b>5. Morinomiya → Osaka Castle.</b> От станции около 15–20 минут пешком через парк. Цель — <b>Osaka Castle Main Tower — музей внутри реконструированной главной башни</b>.</div>
+<div class="btnrow"><a class="btn" href="https://www.google.com/maps/dir/?api=1&origin=Kasuga+Taisha&destination=Kintetsu-Nara+Station&travelmode=transit">Kasuga → Kintetsu-Nara</a><a class="btn alt" href="https://www.google.com/maps/dir/?api=1&origin=Morinomiya+Station&destination=Osaka+Castle&travelmode=walking">Morinomiya → замок</a></div>
+</section>
+
+<section class="card" id="fast">
+<h2>Если начали опаздывать</h2>
+<div class="fast"><b>До 30 минут:</b> Kōfuku-ji только снаружи; в Kasuga Taisha не берём Special Worship, но основную зону и госюин оставляем.</div>
+<div class="fast" style="margin-top:8px"><b>45–60 минут:</b> после Nigatsu-dō решайте по времени. Если уже около 12:45–13:00, идите к Kasuga Taisha только на 15–20 минут и сразу к автобусу/такси.</div>
+<div class="fast" style="margin-top:8px"><b>Сильно позже:</b> не режем Daibutsuden. Если приходится выбирать между Nigatsu-dō и Kasuga Taisha, я бы оставила <b>Kasuga Taisha</b> — оно даёт другой религиозный контекст и объясняет статус оленей.</div>
+</section>
+
+<section class="card">
+<h2>Osaka Castle — что это и что смотреть</h2>
+<p><b>Osaka Castle — замок и музей в реконструированной главной башне.</b> Исторический замок Тоётоми Хидэёси был ключевым политическим центром конца XVI века, но нынешняя башня — железобетонная реконструкция XX века, внутри которой музей.</p>
+<div class="route"><b>Если времени немного:</b> не зависайте на каждом этаже. Поднимитесь наверх к обзорной площадке, а затем спускайтесь через экспозицию, выбирая залы про Тоётоми Хидэёси, битвы за Осаку и модель/историю замка.</div>
+</section>
+</div>
+
+<aside class="side">
+<section class="card">
+<h2>Что обязательно</h2>
+<div class="checks">
+<label><input type="checkbox" data-save="n1"> Олени в Nara Park</label>
+<label><input type="checkbox" data-save="n2"> Nandaimon — Великие южные ворота</label>
+<label><input type="checkbox" data-save="n3"> Статуи Niō — храмовые стражи</label>
+<label><input type="checkbox" data-save="n4"> Daibutsuden — Зал Великого Будды</label>
+<label><input type="checkbox" data-save="n5"> 御朱印 Tōdai-ji</label>
+<label><input type="checkbox" data-save="n6"> Nigatsu-dō — зал на склоне</label>
+<label><input type="checkbox" data-save="n7"> Каменные фонари Kasuga Taisha</label>
+<label><input type="checkbox" data-save="n8"> Основное святилище Kasuga Taisha</label>
+<label><input type="checkbox" data-save="n9"> 御朱印 Kasuga Taisha</label>
+<label><input type="checkbox" data-save="n10"> Уехать в Осаку около 13:15</label>
+</div>
+</section>
+<section class="card">
+<h2>Главная логика Нары</h2>
+<p>Сегодня важно увидеть не набор отдельных «храмов», а связь мест. <b>Tōdai-ji</b> показывает государственный буддизм древней столицы; <b>Kasuga Taisha</b> — синтоистскую сторону Нары и культ божеств-покровителей; <b>олени</b> связывают парк именно с Kasuga Taisha.</p>
+</section>
+<section class="card">
+<h2>Если приехали на JR Nara</h2>
+<p>До Kōfuku-ji и начала парка дальше, чем от Kintetsu-Nara. Самый простой вариант сейчас — автобус до <b>Kintetsu-Nara / Kencho-mae</b> или короткое такси, чтобы не тратить 20+ минут пешком. Дальше маршрут остаётся тем же.</p>
+</section>
+</aside>
+</main>
+
+<div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+<aside id="drawer"><div class="drawer-head"><b>Гид по точке</b><button onclick="closeDrawer()">×</button></div><div class="drawer-body" id="drawerBody"></div></aside>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+var stops={
+kintetsu:{n:"1",title:"Kintetsu-Nara — железнодорожная станция",sub:"старт маршрута",lat:34.68445,lng:135.82753,color:"blue",nav:"https://www.google.com/maps/search/?api=1&query=Kintetsu-Nara+Station"},
+kofuku:{n:"2",title:"Kōfuku-ji — буддийский храм",sub:"короткая остановка",lat:34.68310,lng:135.83130,color:"red",nav:"https://www.google.com/maps/search/?api=1&query=Kofukuji+Nara"},
+park:{n:"3",title:"Nara Park — исторический парк",sub:"олени + переход к Tōdai-ji",lat:34.68520,lng:135.83720,color:"green",nav:"https://www.google.com/maps/search/?api=1&query=Nara+Park"},
+nandai:{n:"4",title:"Nandaimon — Великие южные ворота Tōdai-ji",sub:"статуи Niō",lat:34.68685,lng:135.83962,color:"gold",nav:"https://www.google.com/maps/search/?api=1&query=Todaiji+Nandaimon"},
+todaiji:{n:"5",title:"Daibutsuden — Зал Великого Будды Tōdai-ji",sub:"главная точка · 御朱印",lat:34.68902,lng:135.83990,color:"red",nav:"https://www.google.com/maps/search/?api=1&query=Todaiji+Daibutsuden"},
+nigatsu:{n:"6",title:"Nigatsu-dō — храмовый зал на склоне",sub:"веранда + вид на Нару",lat:34.68993,lng:135.84309,color:"gold",nav:"https://www.google.com/maps/search/?api=1&query=Nigatsudo+Nara"},
+kasuga:{n:"7",title:"Kasuga Taisha — синтоистское святилище",sub:"фонари · олени · 御朱印",lat:34.68132,lng:135.84858,color:"red",nav:"https://www.google.com/maps/search/?api=1&query=Kasuga+Taisha"},
+bus:{n:"8",title:"Kasuga Taisha Honden — автобусная остановка",sub:"быстрый выход к Kintetsu-Nara",lat:34.68100,lng:135.84810,color:"blue",nav:"https://www.google.com/maps/search/?api=1&query=Kasuga+Taisha+Honden+bus+stop"},
+castle:{n:"9",title:"Osaka Castle — замок и музей",sub:"цель после Нары",lat:34.68731,lng:135.52620,color:"gray",nav:"https://www.google.com/maps/search/?api=1&query=Osaka+Castle"}
+};
+var detail={
+kintetsu:'<h2>Kintetsu-Nara — железнодорожная станция</h2><div class="drawer-section"><h3>Как выйти</h3><p>Ориентир — <b>East Ticket Gate → Exit 2</b>. После выхода двигайтесь к Kōfuku-ji и Nara Park. Если увидели указатели на Nara Park / 東大寺, направление верное.</p></div><div class="btnrow"><a class="btn" href="'+stops.kintetsu.nav+'">Станция в Maps</a><button class="btn alt" onclick="openStop(\'kofuku\')">Дальше →</button></div>',
+kofuku:'<h2>Kōfuku-ji — буддийский храм</h2><div class="chips"><span class="chip">VIII век</span><span class="chip">род Фудзивара</span><span class="chip">сегодня коротко</span></div><div class="drawer-section"><h3>Что это</h3><p>Один из главных храмов древней Нары и родовой храм могущественного клана Фудзивара. Когда Нара была столицей Японии, этот комплекс был тесно связан с политической властью.</p></div><div class="drawer-section"><h3>Что смотреть сегодня</h3><p>Пройдите через территорию к Central Golden Hall — главному золотому залу. Знаменитая пятиярусная пагода находится в большой реставрации, поэтому задерживаться здесь надолго сейчас невыгодно.</p></div><div class="btnrow"><a class="btn" href="'+stops.kofuku.nav+'">Навигация</a><button class="btn alt" onclick="openStop(\'park\')">Дальше в парк →</button></div>',
+park:'<h2>Nara Park — исторический парк</h2><div class="chips"><span class="chip must">олени</span><span class="chip">священный ландшафт</span></div><div class="drawer-section"><h3>Что это</h3><p>Это не огороженный городской парк, а огромный исторический ландшафт, соединяющий храмы, святилища, лес и лужайки. Олени свободно перемещаются по территории.</p></div><div class="drawer-section"><h3>Почему олени особенные</h3><p>В традиции Kasuga Taisha олень считается посланником одного из божеств святилища. Поэтому его статус здесь исторически был сакральным, а не просто декоративным.</p></div><div class="drawer-section"><h3>Кормление</h3><p>Покупайте только <b>shika senbei — специальное оленье печенье</b>. Покажите пустые ладони, когда еда закончилась: некоторые олени довольно настойчивы.</p></div><div class="btnrow"><a class="btn" href="'+stops.park.nav+'">Парк в Maps</a><button class="btn alt" onclick="openStop(\'nandai\')">К Tōdai-ji →</button></div>',
+nandai:'<h2>Nandaimon — Великие южные ворота Tōdai-ji</h2><div class="chips"><span class="chip must">обязательно</span><span class="chip">XII–XIII век</span></div><div class="drawer-section"><h3>Что это</h3><p>Монументальные главные ворота Tōdai-ji. Не проходите их как обычный вход.</p></div><div class="drawer-section"><h3>Что искать</h3><p>По сторонам внутри ворот стоят огромные деревянные <b>Niō — храмовые стражи</b>. Это динамичные фигуры XIII века школы Кэй, созданные для устрашения злых сил.</p></div><div class="btnrow"><a class="btn" href="'+stops.nandai.nav+'">Навигация</a><button class="btn alt" onclick="openStop(\'todaiji\')">К Великому Будде →</button></div>',
+todaiji:'<h2>Tōdai-ji — буддийский храмовый комплекс</h2><div class="chips"><span class="chip must">главная точка</span><span class="chip goshuin">御朱印 есть</span><span class="chip">Daibutsuden</span></div><div class="drawer-section"><h3>Что это</h3><p>Один из важнейших храмов японского буддизма. В VIII веке император Сёму создавал его как центр государственной буддийской системы, которая должна была защищать страну.</p></div><div class="drawer-section"><h3>Daibutsuden — Зал Великого Будды</h3><p>Гигантский деревянный зал с бронзовым Буддой Вайрочаной. Нынешнее здание XVII века меньше первоначального, но всё равно даёт представление о масштабе проекта древней столицы.</p></div><div class="drawer-section"><h3>Как пройти</h3><ol><li>От Nandaimon идите прямо к билетной зоне Daibutsuden.</li><li>Внутри сначала осмотрите Будду спереди, затем обойдите зал по кругу.</li><li>Посмотрите на меньшие статуи и архитектурную модель храма.</li><li>Перед выходом возьмите госюин.</li><li>После выхода <b>не возвращайтесь к Nandaimon</b>: ищите указатели <b>二月堂 / Nigatsu-dō</b> и идите на северо-восток.</li></ol></div><div class="goshuinbox"><div class="g-title">Храмовая печать / госюин</div><div class="g-grid"><b>Где:</b><span>в <b>Daibutsuden — Зале Великого Будды</b></span><b>Как искать:</b><span>таблички 御朱印 / 納経所 внутри или у выхода из зала</span><b>Что это:</b><span>отдельная храмовая печать с каллиграфией, а не штамп на билете</span></div></div><div class="btnrow"><a class="btn" href="'+stops.todaiji.nav+'">Daibutsuden в Maps</a><button class="btn alt" onclick="openStop(\'nigatsu\')">Дальше: Nigatsu-dō →</button></div>',
+nigatsu:'<h2>Nigatsu-dō — храмовый зал на склоне</h2><div class="chips"><span class="chip must">вид на Нару</span><span class="chip">часть Tōdai-ji</span></div><div class="drawer-section"><h3>Что это</h3><p>Отдельный зал комплекса Tōdai-ji, стоящий выше главного храма на склоне. Он знаменит древней церемонией <b>Omizutori</b>, во время которой по галерее несут огромные горящие факелы.</p></div><div class="drawer-section"><h3>Что делать</h3><p>Поднимитесь на открытую деревянную веранду. Отсюда хорошо видно всю равнину Нары и крыши Tōdai-ji. Сам подъём и атмосфера старых храмовых улиц вокруг — важная часть точки.</p></div><div class="drawer-section"><h3>Куда дальше</h3><p>После осмотра спускаемся и идём <b>на юг к Kasuga Taisha</b>. Не возвращаемся к Kintetsu-Nara: так вы не делаете лишнюю петлю.</p></div><div class="btnrow"><a class="btn" href="'+stops.nigatsu.nav+'">Навигация</a><button class="btn alt" onclick="openStop(\'kasuga\')">К Kasuga Taisha →</button></div>',
+kasuga:'<h2>Kasuga Taisha — синтоистское святилище</h2><div class="chips"><span class="chip must">обязательно</span><span class="chip goshuin">御朱印 есть</span><span class="chip">фонари</span></div><div class="drawer-section"><h3>Что это</h3><p>Одно из главных синтоистских святилищ Нары, исторически связанное с родом Фудзивара и защитой столицы. Именно с его культом связаны знаменитые олени Нары.</p></div><div class="drawer-section"><h3>Как пройти внутри</h3><ol><li>На подходе не спешите: длинные ряды <b>каменных фонарей</b> — часть святилища, а не просто украшение дороги.</li><li>Пройдите через <b>South Gate — южные ворота</b>.</li><li>Осмотрите красные галереи и основную молитвенную зону.</li><li>Обратите внимание на <b>бронзовые подвесные фонари</b> в коридорах.</li><li>Если есть запас 15–20 минут — Special Worship позволяет пройти глубже в комплекс; если времени мало, пропускаем.</li><li>Перед выходом берём госюин и идём к остановке Kasuga Taisha Honden.</li></ol></div><div class="goshuinbox"><div class="g-title">Храмовая печать / госюин</div><div class="g-grid"><b>Где:</b><span>у зоны выдачи амулетов/госюинов в <b>South Corridor — южном коридоре</b></span><b>Как искать:</b><span>御朱印 / 授与所</span><b>Важно:</b><span>это синтоистское святилище, поэтому печать будет именно святилища, а не буддийского храма</span></div></div><div class="btnrow"><a class="btn" href="'+stops.kasuga.nav+'">Kasuga Taisha в Maps</a><button class="btn alt" onclick="openStop(\'bus\')">Теперь в Осаку →</button></div>',
+bus:'<h2>Kasuga Taisha Honden — автобусная остановка</h2><div class="drawer-section"><h3>Что делать</h3><p>Вам нужен автобус в сторону <b>Kintetsu-Nara Station / 近鉄奈良駅</b>. Смотрите электронное табло и NAVITIME. Если ожидание больше 10–12 минут и уже после 13:15, лучше взять такси: сейчас ценнее сохранить время для Osaka Castle.</p></div><div class="btnrow"><a class="btn" href="'+stops.bus.nav+'">Остановка в Maps</a><button class="btn alt" onclick="openStop(\'castle\')">Osaka Castle →</button></div>',
+castle:'<h2>Osaka Castle — замок и музей</h2><div class="chips"><span class="chip">реконструированная башня</span><span class="chip">музей</span><span class="chip">обзорная площадка</span></div><div class="drawer-section"><h3>Что это</h3><p>Главный символ эпохи Тоётоми Хидэёси в Осаке. Историческая башня неоднократно разрушалась; нынешняя — реконструкция XX века, внутри которой расположен музей истории замка и Тоётоми.</p></div><div class="drawer-section"><h3>Если придёте около 15:00–15:30</h3><p>Сначала поднимитесь к обзорной площадке, затем спускайтесь через экспозицию. При дефиците времени приоритет — Тоётоми Хидэёси, осады Осаки и история строительства замка; сувенирные этажи можно проходить быстро.</p></div><div class="btnrow"><a class="btn" href="'+stops.castle.nav+'">Замок в Maps</a></div>'
+};
+var map=L.map('map',{zoomControl:true}).setView([34.685,135.839],14);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
+var markers={},naraPts=[];
+Object.keys(stops).forEach(function(k){
+ var s=stops[k],ic=L.divIcon({className:'',html:'<div class="num '+s.color+'">'+s.n+'</div>',iconSize:[32,32],iconAnchor:[16,16]});
+ var m=L.marker([s.lat,s.lng],{icon:ic}).addTo(map);
+ m.bindPopup('<div class="pt">'+s.title+'</div><div class="ps">'+s.sub+'</div><button class="pb" onclick="openStop(\''+k+'\')">Открыть гид</button>');
+ markers[k]=m;if(k!=='castle')naraPts.push([s.lat,s.lng]);
+});
+L.polyline([[stops.kintetsu.lat,stops.kintetsu.lng],[stops.kofuku.lat,stops.kofuku.lng],[stops.park.lat,stops.park.lng],[stops.nandai.lat,stops.nandai.lng],[stops.todaiji.lat,stops.todaiji.lng],[stops.nigatsu.lat,stops.nigatsu.lng],[stops.kasuga.lat,stops.kasuga.lng],[stops.bus.lat,stops.bus.lng]],{color:'#365743',weight:5,opacity:.78}).addTo(map);
+L.polyline([[stops.bus.lat,stops.bus.lng],[stops.castle.lat,stops.castle.lng]],{color:'#496c86',weight:4,opacity:.65,dashArray:'9 7'}).addTo(map);
+function fitNara(){map.fitBounds(naraPts,{padding:[25,25]});}
+function fitAll(){map.fitBounds(naraPts.concat([[stops.castle.lat,stops.castle.lng]]),{padding:[25,25]});}
+function openStop(k){document.getElementById('drawerBody').innerHTML=detail[k]||'<h2>'+stops[k].title+'</h2>';document.getElementById('drawer').classList.add('open');document.getElementById('overlay').classList.add('open');}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('open');}
+var me;
+function showMe(){if(!navigator.geolocation){alert('Геолокация не поддерживается браузером');return;}navigator.geolocation.getCurrentPosition(function(p){if(me)map.removeLayer(me);me=L.circleMarker([p.coords.latitude,p.coords.longitude],{radius:9,color:'#fff',weight:3,fillColor:'#2069d8',fillOpacity:1}).addTo(map).bindPopup('Вы здесь');map.setView([p.coords.latitude,p.coords.longitude],15);me.openPopup();},function(){alert('Safari не дал доступ к геолокации. Используйте кнопки Google Maps в карточках.');},{enableHighAccuracy:true,timeout:8000});}
+document.querySelectorAll('input[data-save]').forEach(function(el){var k='nara28-'+el.dataset.save;el.checked=localStorage.getItem(k)==='1';el.addEventListener('change',function(){localStorage.setItem(k,el.checked?'1':'0');});});
+fitNara();
+</script>
+</body></html>
